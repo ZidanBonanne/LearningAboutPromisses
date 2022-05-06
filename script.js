@@ -96,8 +96,17 @@ const renderCountry = function (data, className=""){
 const request = fetch(`https://restcountries.com/v3.1/name/brazil`)
 // console.log(request);
  const getCountriesData = function(country){
-    fetch(`https://restcountries.com/v3.1/name/${country}`).then((response) => response.json()
-    ).then((data)=> renderCountry(data[0]))
- }
+    fetch(`https://restcountries.com/v3.1/name/${country}`).then((response) => response.json())
+    .then((data)=> {renderCountry(data[0])
+        console.log(data);
+        const neighbour = data[0].borders[0]
+        if(!neighbour) return 
+        return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`)
+    })
+    .then(reponse => reponse.json())
+    .then(data=> {
+        console.log(data);
+        renderCountry(data[0],"neighbour")})
+}
 
  getCountriesData("brazil")
