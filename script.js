@@ -3,11 +3,14 @@
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
+
+// mensagem de erro para os codigo e onde será inserida
 const renderError = function(msg){
     countriesContainer.insertAdjacentText('beforeend', msg);
     countriesContainer.style.opacity = 1; 
 }
 
+// cria o elemento HTML a partir do impute do que será colocado
 const renderCountry = function (data, className=""){
     const html = `
     <article class="country ${className}">
@@ -99,6 +102,8 @@ const renderCountry = function (data, className=""){
 //         renderCountry(data[0])
 //     })
 //  }
+
+// reduz a api de baixo ela faz a verificação caso for usada para outras partes do codigo
 const getJson = function(url, messageErr = "Something went wrong"){
     return fetch(url)
     .then((response)=>{
@@ -125,7 +130,7 @@ const getJson = function(url, messageErr = "Something went wrong"){
 //         countriesContainer.style.opacity = 1;
 //     })
 // }
-/// minha api funciona a partir daqui
+/// minha api funciona a partir daqui, ela pega os dados a partir do impute do pais e adiciona os pais vizinho também
 const getCountriesData = function(country){
     getJson(`https://restcountries.com/v3.1/name/${country}`,"Country not found" )
     .then((data)=>{ 
@@ -144,30 +149,68 @@ const getCountriesData = function(country){
         countriesContainer.style.opacity = 1;
     })
 }
-
+// adicionar evento no botão para mostrar o pais
 // btn.addEventListener("click", function(){
 //      getCountriesData("japan")
 //  })
-
-const whereAmI =  function(lat, log){
-    return fetch(`https://geocode.xyz/${lat},${log}?geoit=json`)
-    .then(res => {
-        if(!res.ok) 
-            throw new Error (`Problem with geocoding (${res.status })`)
-        return res.json()
-    }).then(data => {
-        console.log(data);
-        console.log(`You are in ${data.city} stay in ${data.country}`);
-        return fetch(`https://restcountries.com/v3.1/name/${data.country}`)})
-    .then(response => {
-        if(!response.ok) 
-            throw new Error (`Country not found (${response.status })`)
-        return response.json()})
-    .then(data=> renderCountry(data[0]))
-    .catch(err =>{
-        renderError(`Something went wrong ${err.message}`)
-    } )
-}
-whereAmI(52.508,13.381)
-whereAmI(19.037,72.873)
+// api geolocalização
+// const whereAmI =  function(lat, log){
+//     return fetch(`https://geocode.xyz/${lat},${log}?geoit=json`)
+//     .then(res => {
+//         if(!res.ok) 
+//             throw new Error (`Problem with geocoding (${res.status })`)
+//         return res.json()
+//     }).then(data => {
+//         console.log(data);
+//         console.log(`You are in ${data.city} stay in ${data.country}`);
+//         return fetch(`https://restcountries.com/v3.1/name/${data.country}`)})
+//     .then(response => {
+//         if(!response.ok) 
+//             throw new Error (`Country not found (${response.status })`)
+//         return response.json()})
+//     .then(data=> renderCountry(data[0]))
+//     .catch(err =>{
+//         renderError(`Something went wrong ${err.message}`)
+//     } )
+// }
+// whereAmI(52.508,13.381)
+// whereAmI(19.037,72.873)
 // whereAmI(-33.933,18.474)
+
+
+
+// navigator.geolocation.getCurrentPosition(position=> console.log(position), err=> console.error(err))
+// pegando posição do navegador e renderizando infos na tela
+// const getPosition= function(){
+//     return new Promise(function(resolve, reject){
+//         navigator.geolocation.getCurrentPosition(resolve, reject)
+//     })
+// }
+
+// // getPosition().then(pos => console.log(pos)).catch(err =>console.error(err))
+// const whereAmI =  function(){
+//     let lat;
+//     let log;
+//     getPosition().then(pos=>{
+//         const{latitude:lat, longitude:log} = pos.coords
+//         console.log();
+//         return fetch(`https://geocode.xyz/${lat},${log}?geoit=json`)
+//     })
+//     .then(res => {
+//         if(!res.ok) 
+//             throw new Error (`Problem with geocoding (${res.status})`)
+//         return res.json()
+//     }).then(data => {
+//         console.log(data);
+//         console.log(`You are in ${data.city} stay in ${data.country}`);
+//         return fetch(`https://restcountries.com/v3.1/name/${data.country}`)})
+//     .then(response => {
+//         if(!response.ok) 
+//             throw new Error (`Country not found (${response.status })`)
+//         return response.json()})
+//     .then(data=> renderCountry(data[0]))
+//     .catch(err =>{
+//         renderError(`Something went wrong ${err.message}`)
+//     } )
+// }
+// document.addEventListener("load", whereAmI())
