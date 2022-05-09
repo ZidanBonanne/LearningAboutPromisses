@@ -214,3 +214,41 @@ const getCountriesData = function(country){
 //     } )
 // }
 // document.addEventListener("load", whereAmI())
+
+const getPosition= function(){
+    return new Promise(function(resolve, reject){
+        navigator.geolocation.getCurrentPosition(resolve, reject)
+    })
+}
+
+
+const whereAmI = async function(){
+    try {
+    const pos = await getPosition()
+    const {latitude:lat, longitude:log} = pos.coords
+    const resGeo = await fetch(`https://geocode.xyz/${lat},${log}?geoit=json`)
+    if(!resGeo.ok) throw new Error ("Problem getting location data")
+    const dataGeo = await resGeo.json()
+    const resolve = await fetch(`https://restcountries.com/v3.1/name/${dataGeo.country}`)
+  
+    if(!resolve.ok) throw new Error ("Problem getting country")
+    const data = await resolve.json()
+    renderCountry(data[0])
+    return `Your city is ${dataGeo.city}`
+    } 
+    catch(err){
+    renderError(err.message)
+    }
+    throw err;
+};
+// whereAmI()
+(async function () {
+    try{
+    const city =  await whereAmI()
+    console.log(`2 ${city}`);
+    } 
+    catch (err){
+    console.error(err.message);
+    }
+    console.log("3");
+})();
